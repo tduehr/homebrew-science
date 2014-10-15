@@ -33,6 +33,7 @@ class Pulseview < Formula
     ]
 
     ENV.append_path("PKG_CONFIG_PATH", lib/"pkgconfig")
+    ENV.append_path "PKG_CONFIG_PATH", HOMEBREW_PREFIX/"Frameworks/Python.framework/Versions/3.4/lib/pkgconfig"
 
     qt = Formula['qt'].opt_prefix
     args = std_cmake_args + %W[
