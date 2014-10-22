@@ -9,6 +9,12 @@ class Petsc < Formula
   option 'without-check', 'Skip build-time tests (not recommended)'
   option 'complex', 'Build complex-valued version of PETSc'
 
+  if build.include? "complex"
+    version "3.5.2-complex"
+  else
+    version "3.5.2-real"
+  end
+
   depends_on :mpi => :cc
   depends_on :fortran
   depends_on :x11 => :optional
