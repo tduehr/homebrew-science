@@ -11,6 +11,12 @@ class Slepc < Formula
   depends_on :x11  => MacOS::X11.installed? ? :recommended : :optional
   depends_on 'arpack' => :optional
 
+  tmp = "#{Formula["petsc"].prefix}"
+  tmp = tmp.rpartition("-");
+  if tmp[2].length > 0
+    version ("3.5.2-" + tmp[2])
+  end
+
   # Trick SLEPc into thinking we don't have a prefix install of PETSc.
   patch :DATA
 
