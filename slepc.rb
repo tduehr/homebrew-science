@@ -2,13 +2,20 @@ require 'formula'
 
 class Slepc < Formula
   homepage 'http://www.grycap.upv.es/slepc'
-  url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.4.tar.gz'
-  sha1 'd7c09f3e2bb8910758e488e84c16a6eb266cf379'
+  url 'http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.5.2.tar.gz'
+  sha1 '23675bee5c010d20f4a08f80f22120119ddb940a'
 
   depends_on 'petsc' => :build
   depends_on :mpi => [:cc, :f90]
   depends_on :fortran
   depends_on :x11  => MacOS::X11.installed? ? :recommended : :optional
+  depends_on 'arpack' => :optional
+
+  tmp = "#{Formula["petsc"].prefix}"
+  tmp = tmp.rpartition("-");
+  if tmp[2].length > 0
+    version ("3.5.2-" + tmp[2])
+  end
 
   # Trick SLEPc into thinking we don't have a prefix install of PETSc.
   patch :DATA
@@ -19,10 +26,14 @@ class Slepc < Formula
     ENV['SLEPC_DIR'] = Dir.getwd
     ENV['PETSC_DIR'] = Formula["petsc"].opt_prefix
     ENV['PETSC_ARCH'] = petsc_arch
-    system "./configure", "--prefix=#{prefix}/#{petsc_arch}"
+    args = %W[
+      --prefix=#{prefix}/#{petsc_arch}
+    ]
+    args << "--with-arpack-dir=#{Formula["arpack"].opt_prefix}/lib" << "--with-arpack-flags=-lparpack,-larpack" if build.with? "arpack"
+    system "./configure", *args
     system "make PETSC_ARCH=#{petsc_arch}"
     system "make PETSC_ARCH=#{petsc_arch} install"
-    ENV['PETSC_ARCH'] = ''
+    #ENV['PETSC_ARCH'] = ''  # If this line is un-commented, tests do not compile
     system "make SLEPC_DIR=#{prefix}/#{petsc_arch} test"
     ohai 'Test results are in ~/Library/Logs/Homebrew/slepc. Please check.'
 
@@ -46,7 +57,7 @@ diff --git a/config/configure.py b/config/configure.py
 index 7d2fd64..22351c3 100755
 --- a/config/configure.py
 +++ b/config/configure.py
-@@ -208,8 +208,6 @@ if petscversion.VERSION < slepcversion.VERSION:
+@@ -215,8 +215,6 @@ if petscversion.VERSION < slepcversion.VERSION:
  petscconf.Load(petscdir)
  if not petscconf.PRECISION in ['double','single','__float128']:
    sys.exit('ERROR: This SLEPc version does not work with '+petscconf.PRECISION+' precision')
