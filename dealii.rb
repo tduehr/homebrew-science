@@ -36,7 +36,8 @@ class Dealii < Formula
 
   def install
     args = %W[
-      -D CMAKE_INSTALL_PREFIX=#{prefix}
+      -DCMAKE_INSTALL_PREFIX=#{prefix}
+      -DDEAL_II_COMPONENT_COMPAT_FILES=OFF
     ]
 
     if build.with? 'mpi'
