@@ -46,7 +46,11 @@ class Dealii < Formula
     end
 
     mkdir 'build' do
-      system "cmake", *args, "../"
+      loc = "../"
+      if build.stable? then
+        loc = "../deal.II"
+      end
+      system "cmake", *args, loc
       system "make"
       system "make install"
     end
