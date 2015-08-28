@@ -1,8 +1,8 @@
 class Libsigrokdecode < Formula
-  url "http://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-0.3.0.tar.gz"
+  url "http://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-0.3.1.tar.gz"
   homepage "http://sigrok.org/"
   head "git://sigrok.org/libsigrokdecode", :shallow => false
-  sha1 "a75f2839cf62d965281bac22919e761c5210e32e"
+  sha1 "dc30fda21ff28d44337f3448c5df616352e33c94"
 
   depends_on "pkg-config" => :build
   depends_on "glib"
